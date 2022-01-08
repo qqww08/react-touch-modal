@@ -3,12 +3,13 @@
 # dependencies
 /node_modules
 dist
-
+.idea
 # testing
 /coverage
 
 # production
 /build
+public
 
 # misc
 .DS_Store

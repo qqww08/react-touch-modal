@@ -1,11 +1,10 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
+import React from "react"
+import ReactDOM from "react-dom";
+import ReactKeypad from "./ReactKeypad";
 
-import TouchDrawer from "./TouchDrawer";
 
-export default TouchDrawer;
-// ReactDOM.render(
-//     <TouchDrawer isVisible onClose={() => null}>asd</TouchDrawer>,
-//     document.getElementById('root')
-// );
-//
+ReactDOM.render(
+    <ReactKeypad isVisible shuffle onClose={() => null} onFinish={(password)=>console.log(password)}/>,
+    document.getElementById('root')
+);
+
