@@ -1,35 +1,36 @@
 import Drawer from "react-bottom-drawer";
 import styled from "styled-components";
 import React from "react";
-import {Keypad} from "./components";
+import { Keypad } from "../components";
+import { Shuffle } from "../types";
 
 interface Props {
-    onClose: () => void;
-    isVisible: boolean;
-    count?: 4 | 5 | 6;
-    onFinish: (password: string) => void;
-    message?: string;
-    error?: string;
-    className?: string
-    shuffle?: boolean
+  onClose: () => void;
+  isVisible: boolean;
+  count?: 4 | 5 | 6;
+  onFinish: (password: string) => void;
+  message?: string;
+  error?: string;
+  className?: string;
+  shuffle?: Shuffle;
 }
 
 const ReactKeypad = (props: Props) => {
-    const {onClose, isVisible, className = "react-keypad", ...rest} = props;
+  const { onClose, isVisible, className = "react-keypad", ...rest } = props;
 
-    return (
-        <__Wrapper>
-            <Drawer
-                duration={400}
-                hideScrollbars
-                onClose={onClose}
-                isVisible={isVisible}
-                className="password-drawer"
-            >
-                <Keypad {...rest} className={className}/>
-            </Drawer>
-        </__Wrapper>
-    );
+  return (
+    <__Wrapper>
+      <Drawer
+        duration={400}
+        hideScrollbars
+        onClose={onClose}
+        isVisible={isVisible}
+        className="password-drawer"
+      >
+        <Keypad {...rest} className={className} />
+      </Drawer>
+    </__Wrapper>
+  );
 };
 
 export default ReactKeypad;

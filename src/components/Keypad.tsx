@@ -1,39 +1,63 @@
-import React, {useEffect, useState} from "react"
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
-import {keyValue, shuffleHandler} from "../utils";
 
+import { Shuffle } from "../types";
+import useShuffle from "../hooks/useShuffle";
 
 interface Props {
-    onFinish: (password: string) => void
-    count?: 4 | 5 | 6;
-    className?: string
-    shuffle?: boolean
-    message?: string
+  onFinish: (password: string) => void;
+  count?: 4 | 5 | 6;
+  className?: string;
+  shuffle?: Shuffle;
+  message?: string;
 }
 
 const Keypad = (props: Props) => {
-    const {onFinish, className, shuffle = false, count = 6, message = "패스워드를 입력 해주세요."} = props
-    const [keyData, setKeyData] = useState<number[] | null>([...Array(count).map(item => item)])
+  const {
+    onFinish,
+    className,
+    count = 6,
+    shuffle = "fixed",
+    message = "패스워드를 입력 해주세요.",
+  } = props;
 
-    useEffect(() => {
-        onFinish("123")
-        return () => {
-            setKeyData([...Array(count).map(item => item)])
-        }
-    }, [])
+  const [keyData, setKeyData] = useState<string[]>([...Array(count).map((item) => item)]);
+  const keyNumber = useShuffle({ shuffle, keyData });
 
-    return (
-        <__Container className={`${className}-container`}>
-            <__Message>{message}</__Message>
-            <__BulletWrapper className={`${className}-bullet`}>
-                {keyData?.map((item, index) => <__Bullet key={index}>{item}</__Bullet>)}
-            </__BulletWrapper>
-            <__PasswordWrapper className={`${className}-button-wrapper`}>
-                {shuffleHandler(keyValue, shuffle).map((item, index) => <__KeyPad key={index}
-                                                                                  className={`${className}-button`}>{item}</__KeyPad>)}
-            </__PasswordWrapper>
-        </__Container>
-    );
+  const handleClick = useCallback(
+    (value: string) => {
+      const keyValue = keyData;
+      const keyLength = keyValue.join("").length;
+      keyValue.splice(keyLength, 1, value);
+      setKeyData([...keyValue]);
+    },
+    [keyData]
+  );
+
+  useEffect(() => {
+    onFinish("123");
+    return () => {
+      setKeyData([...Array(count).map((item) => item)]);
+    };
+  }, []);
+
+  return (
+    <__Container className={`${className}-container`}>
+      <__Message>{message}</__Message>
+      <__BulletWrapper className={`${className}-bullet`}>
+        {[...Array(count)]?.map((item, index) => (
+          <__Bullet key={index}>{item}</__Bullet>
+        ))}
+      </__BulletWrapper>
+      <__PasswordWrapper className={`${className}-button-wrapper`}>
+        {keyNumber.map((item, index) => (
+          <__KeyPad key={index} className={`${className}-button`} onClick={() => handleClick(item)}>
+            {item}
+          </__KeyPad>
+        ))}
+      </__PasswordWrapper>
+    </__Container>
+  );
 };
 
 export default Keypad;

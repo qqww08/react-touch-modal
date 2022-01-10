@@ -1,4 +1,3 @@
-
 import ReactKeypad from "./ReactKeypad";
 
-export default  ReactKeypad
+export default ReactKeypad;
