@@ -1,6 +1,6 @@
 {
   "name": "react-number-keypad",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "react-number-keypad testing",
   "main": "./dist/index.js",
   "homepage": "https://github.com/qqww08/react-number-keypad",
