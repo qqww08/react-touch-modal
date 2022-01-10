@@ -2,18 +2,15 @@ import Drawer from "react-bottom-drawer";
 import styled from "styled-components";
 import React from "react";
 import { Keypad } from "../components";
+import { IKeypad } from "../types";
 
-interface Props {
+interface Props extends IKeypad {
   onClose: () => void;
   isVisible: boolean;
-  onFinish: (password: string) => void;
-  message?: string;
-  error?: string;
-  className?: string;
 }
 
 const ReactKeypad = (props: Props) => {
-  const { onClose, isVisible, className = "react-keypad", ...rest } = props;
+  const { onClose, isVisible, ...rest } = props;
 
   return (
     <__Wrapper>
@@ -24,7 +21,7 @@ const ReactKeypad = (props: Props) => {
         isVisible={isVisible}
         className="password-drawer"
       >
-        <Keypad {...rest} className={className} />
+        <Keypad {...rest} />
       </Drawer>
     </__Wrapper>
   );

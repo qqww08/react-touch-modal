@@ -1,41 +1,40 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { Shuffle } from "../types";
+import { IKeypad } from "../types";
 import useShuffle from "../hooks/useShuffle";
 
-interface Props {
-  onFinish: (password: string) => void;
-  count?: 4 | 5 | 6;
-  className?: string;
-  shuffle?: Shuffle;
-  message?: string;
-}
-
-const Keypad = (props: Props) => {
+const Keypad = (props: IKeypad) => {
   const {
     onFinish,
-    className,
     count = 6,
+    className = "react-keypad",
     shuffle = "fixed",
     message = "패스워드를 입력 해주세요.",
+    error = "",
   } = props;
 
   const [keyData, setKeyData] = useState<string[]>([...Array(count).map((item) => item)]);
   const keyNumber = useShuffle({ shuffle, keyData });
+  const keyValueLength = useMemo(() => keyData.join("").length, [keyData]);
 
   const handleClick = useCallback(
     (value: string) => {
       const keyValue = keyData;
-      const keyLength = keyValue.join("").length;
-      keyValue.splice(keyLength, 1, value);
+      keyValue.splice(keyValueLength, 1, value);
       setKeyData([...keyValue]);
     },
-    [keyData]
+    [keyData, keyValueLength]
   );
 
   useEffect(() => {
-    onFinish("123");
+    if (keyValueLength > 5) {
+      setKeyData([...Array(count).map((item) => item)]);
+      onFinish(keyData.join(""));
+    }
+  }, [keyValueLength]);
+
+  useEffect(() => {
     return () => {
       setKeyData([...Array(count).map((item) => item)]);
     };
@@ -43,12 +42,14 @@ const Keypad = (props: Props) => {
 
   return (
     <__Container className={`${className}-container`}>
-      <__Message>{message}</__Message>
+      <__Message className={`${className}-message`}>{message}</__Message>
+      <__ErrorMessage className={`${className}-error`}>{error}</__ErrorMessage>
       <__BulletWrapper className={`${className}-bullet`}>
-        {[...Array(count)]?.map((item, index) => (
-          <__Bullet key={index}>{item}</__Bullet>
+        {keyData?.map((item, index) => (
+          <__Bullet key={index} activeColor={item} />
         ))}
       </__BulletWrapper>
+
       <__PasswordWrapper className={`${className}-button-wrapper`}>
         {keyNumber.map((item, index) => (
           <__KeyPad key={index} className={`${className}-button`} onClick={() => handleClick(item)}>
@@ -75,12 +76,14 @@ const __BulletWrapper = styled.ul`
   align-items: center;
   justify-content: space-between;
   list-style-type: none;
+  margin-top: 0;
 `;
-const __Bullet = styled.li`
+const __ErrorMessage = styled.p``;
+const __Bullet = styled.li<{ activeColor: string }>`
   border-radius: 50%;
   width: 15px;
   height: 15px;
-  background: #a6a6a6;
+  background: ${(props) => (props.activeColor ? "#000000" : "#a6a6a6")};
 `;
 const __PasswordWrapper = styled.div`
   width: 100%;
