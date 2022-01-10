@@ -1,5 +1,5 @@
 import { keyValue } from "../utils";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Shuffle } from "../types";
 
 interface Props {
@@ -10,11 +10,11 @@ const useShuffle = (props: Props): string[] => {
   const { shuffle, keyData } = props;
   const [keyNumber, setKeyNumber] = useState<string[]>([]);
 
-  const alwaysShuffleHandler = () => {
+  const alwaysShuffleHandler = useCallback(() => {
     setKeyNumber(keyValue.sort(() => Math.random() - 0.5));
-  };
+  }, [keyNumber]);
 
-  const shuffleHandler = () => {
+  const shuffleHandler = useCallback(() => {
     switch (shuffle) {
       case "once":
         return setKeyNumber(keyValue.sort(() => Math.random() - 0.5));
@@ -23,7 +23,7 @@ const useShuffle = (props: Props): string[] => {
       default:
         return [];
     }
-  };
+  }, [keyNumber, shuffle]);
 
   useEffect(() => {
     if (shuffle === "always") alwaysShuffleHandler();

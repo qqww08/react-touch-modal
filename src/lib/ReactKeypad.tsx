@@ -2,17 +2,14 @@ import Drawer from "react-bottom-drawer";
 import styled from "styled-components";
 import React from "react";
 import { Keypad } from "../components";
-import { Shuffle } from "../types";
 
 interface Props {
   onClose: () => void;
   isVisible: boolean;
-  count?: 4 | 5 | 6;
   onFinish: (password: string) => void;
   message?: string;
   error?: string;
   className?: string;
-  shuffle?: Shuffle;
 }
 
 const ReactKeypad = (props: Props) => {
