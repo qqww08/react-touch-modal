@@ -1,4 +1,4 @@
-import { keyValue } from "../utils";
+import { keyValue } from "../lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { Shuffle } from "../types";
 

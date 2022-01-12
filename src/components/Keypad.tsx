@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { IKeypad } from "../types";
 import useShuffle from "../hooks/useShuffle";
-import { defaultMessage } from "../utils";
+import { defaultMessage } from "../lib/utils";
 
 const Keypad = (props: IKeypad) => {
   const {

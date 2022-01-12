@@ -1,25 +1,17 @@
 {
   "name": "react-number-keypad",
-  "version": "0.0.5",
+  "version": "0.0.9",
   "description": "react-number-keypad testing",
-  "main": "./dist/index.js",
-  "module": "./dist/index.esm.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "homepage": "https://github.com/qqww08/react-number-keypad",
   "license": "MIT",
   "files": [
-    "dist/**"
+    "dist"
   ],
   "author": {
     "name": "DaeHyun Shin",
     "email": "qqwwee08@naver.com"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.mjs",
-      "module": "./dist/index.esm.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
   },
   "dependencies": {
     "react": "^17.0.2",
