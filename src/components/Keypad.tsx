@@ -3,21 +3,30 @@ import styled from "styled-components";
 
 import { IKeypad } from "../types";
 import useShuffle from "../hooks/useShuffle";
+import { defaultMessage } from "../utils";
 
 const Keypad = (props: IKeypad) => {
   const {
     onFinish,
+    onPassConfirm,
+    emptyPassword,
     count = 6,
     className = "react-keypad",
     shuffle = "fixed",
-    message = "패스워드를 입력 해주세요.",
+    messages = defaultMessage,
     error = "",
   } = props;
 
+  const [msg, setMsg] = useState<string>("");
   const [keyData, setKeyData] = useState<string[]>([...Array(count).map((item) => item)]);
+  const [password, setPassword] = useState<any>([]);
+
   const keyNumber = useShuffle({ shuffle, keyData });
   const keyValueLength = useMemo(() => keyData.join("").length, [keyData]);
+  const keyValue = useMemo(() => keyData.join(""), [keyData]);
+  const keyFinish = useMemo(() => keyValueLength === count, [keyValueLength, count]);
 
+  //keypad click func
   const handleClick = useCallback(
     (value: string) => {
       const keyValue = keyData;
@@ -28,11 +37,32 @@ const Keypad = (props: IKeypad) => {
   );
 
   useEffect(() => {
-    if (keyValueLength > 5) {
-      setKeyData([...Array(count).map((item) => item)]);
-      onFinish(keyData.join(""));
+    switch (true) {
+      case password.length === 2:
+        if (onPassConfirm) {
+          onPassConfirm(password);
+        }
+        break;
+      case keyFinish && emptyPassword && password.length < 2:
+        setKeyData([...Array(count).map((item) => item)]);
+        setPassword((prev) => [...prev, keyValue]);
+        break;
+      case keyFinish:
+        setKeyData([...Array(count).map((item) => item)]);
+        onFinish(keyValue);
+        break;
+      default:
+        break;
     }
   }, [keyValueLength]);
+
+  useEffect(() => {
+    if (emptyPassword) {
+      setMsg(messages[1]);
+    } else {
+      setMsg(messages[0]);
+    }
+  }, [emptyPassword]);
 
   useEffect(() => {
     return () => {
@@ -42,7 +72,7 @@ const Keypad = (props: IKeypad) => {
 
   return (
     <__Container className={`${className}-container`}>
-      <__Message className={`${className}-message`}>{message}</__Message>
+      <__Message className={`${className}-message`}>{msg}</__Message>
       <__ErrorMessage className={`${className}-error`}>{error}</__ErrorMessage>
       <__BulletWrapper className={`${className}-bullet`}>
         {keyData?.map((item, index) => (

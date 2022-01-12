@@ -1,3 +1,3 @@
 import Keypad from "./Keypad";
 
-export {Keypad}
+export { Keypad };
