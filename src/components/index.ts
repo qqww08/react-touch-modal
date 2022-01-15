@@ -1,3 +1,3 @@
-import Keypad from "./Keypad";
+import Keypad from "../lib/Keypad";
 
 export { Keypad };

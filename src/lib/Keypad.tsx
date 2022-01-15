@@ -3,21 +3,24 @@ import styled from "styled-components";
 
 import { IKeypad } from "../types";
 import useShuffle from "../hooks/useShuffle";
-import { defaultMessage } from "../lib/utils";
+import { defaultMessage } from "./utils";
 
 const Keypad = (props: IKeypad) => {
   const {
     onFinish,
     onPassConfirm,
-    emptyPassword,
+    emptyPassword = false,
     count = 6,
-    className = "react-keypad",
+    className = "password",
     shuffle = "fixed",
     messages = defaultMessage,
     error = "",
+    deleteIcon = "삭제",
+    deleteAllIcon = "전체삭제",
   } = props;
 
   const [msg, setMsg] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState(error);
   const [keyData, setKeyData] = useState<string[]>([...Array(count).map((item) => item)]);
   const [password, setPassword] = useState<any>([]);
 
@@ -26,24 +29,40 @@ const Keypad = (props: IKeypad) => {
   const keyValue = useMemo(() => keyData.join(""), [keyData]);
   const keyFinish = useMemo(() => keyValueLength === count, [keyValueLength, count]);
 
+  const handleFullCut = useCallback(
+    () => setKeyData([...Array(count).map((item) => item)]),
+    [keyData]
+  );
+
+  const handleDelete = useCallback(() => {
+    keyData.splice(keyValueLength - 1, 1, "");
+    setKeyData([...keyData]);
+  }, [keyData, keyValueLength]);
+
   //keypad click func
   const handleClick = useCallback(
     (value: string) => {
+      if (errorMsg) {
+        setErrorMsg("");
+      }
       const keyValue = keyData;
       keyValue.splice(keyValueLength, 1, value);
       setKeyData([...keyValue]);
     },
-    [keyData, keyValueLength]
+    [keyData, keyValueLength, errorMsg]
   );
 
   useEffect(() => {
     switch (true) {
       case password.length === 2:
         if (onPassConfirm) {
+          setMsg(messages[1]);
           onPassConfirm(password);
+          setKeyData([...Array(count).map((item) => item)]);
         }
         break;
       case keyFinish && emptyPassword && password.length < 2:
+        setMsg(messages[2]);
         setKeyData([...Array(count).map((item) => item)]);
         setPassword((prev) => [...prev, keyValue]);
         break;
@@ -65,15 +84,22 @@ const Keypad = (props: IKeypad) => {
   }, [emptyPassword]);
 
   useEffect(() => {
+    if (error) {
+      setErrorMsg(error);
+    }
+  }, [error]);
+
+  useEffect(() => {
     return () => {
       setKeyData([...Array(count).map((item) => item)]);
+      setMsg(messages[0]);
     };
   }, []);
 
   return (
     <__Container className={`${className}-container`}>
       <__Message className={`${className}-message`}>{msg}</__Message>
-      <__ErrorMessage className={`${className}-error`}>{error}</__ErrorMessage>
+      <__ErrorMessage className={`${className}-error`}>{errorMsg}</__ErrorMessage>
       <__BulletWrapper className={`${className}-bullet`}>
         {keyData?.map((item, index) => (
           <__Bullet key={index} activeColor={item} />
@@ -81,11 +107,34 @@ const Keypad = (props: IKeypad) => {
       </__BulletWrapper>
 
       <__PasswordWrapper className={`${className}-button-wrapper`}>
-        {keyNumber.map((item, index) => (
-          <__KeyPad key={index} className={`${className}-button`} onClick={() => handleClick(item)}>
-            {item}
-          </__KeyPad>
-        ))}
+        {keyNumber?.map((item, index) => {
+          switch (index) {
+            case 9:
+              return (
+                <React.Fragment key={index}>
+                  <__KeyPad className={`${className}-button`} onClick={handleFullCut}>
+                    {deleteAllIcon}
+                  </__KeyPad>
+                  <__KeyPad className={`${className}-button`} onClick={() => handleClick(item)}>
+                    {item}
+                  </__KeyPad>
+                  <__KeyPad className={`${className}-button`} onClick={handleDelete}>
+                    {deleteIcon}
+                  </__KeyPad>
+                </React.Fragment>
+              );
+            default:
+              return (
+                <__KeyPad
+                  key={index}
+                  className={`${className}-button`}
+                  onClick={() => handleClick(item)}
+                >
+                  {item}
+                </__KeyPad>
+              );
+          }
+        })}
       </__PasswordWrapper>
     </__Container>
   );
@@ -108,7 +157,12 @@ const __BulletWrapper = styled.ul`
   list-style-type: none;
   margin-top: 0;
 `;
-const __ErrorMessage = styled.p``;
+const __ErrorMessage = styled.p`
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+`;
 const __Bullet = styled.li<{ activeColor: string }>`
   border-radius: 50%;
   width: 15px;
@@ -119,6 +173,7 @@ const __PasswordWrapper = styled.div`
   width: 100%;
 `;
 const __Message = styled.p`
+  margin-bottom: 100px;
   text-align: center;
 `;
 const __KeyPad = styled.button`
