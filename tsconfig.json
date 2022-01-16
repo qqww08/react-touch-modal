@@ -18,6 +18,9 @@
     "target": "es5",
     "baseUrl": ".",
     "noEmitOnError": true,
+    "paths": {
+      "react-number-keypad": ["./src/index.ts"],
+    }
   },
   "include": [
     "src"

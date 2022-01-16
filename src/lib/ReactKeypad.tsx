@@ -1,8 +1,8 @@
 import Drawer from "react-bottom-drawer";
 import styled from "styled-components";
 import React from "react";
-import { IKeypad } from "./types";
-import Keypad from "./lib/Keypad";
+import { IKeypad } from "../types";
+import Keypad from "./Keypad";
 
 interface Props extends IKeypad {
   onClose: () => void;
@@ -11,7 +11,6 @@ interface Props extends IKeypad {
 
 const ReactKeypad = (props: Props) => {
   const { onClose, isVisible, ...rest } = props;
-
   return (
     <__Wrapper>
       <Drawer

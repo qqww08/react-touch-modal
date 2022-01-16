@@ -9,8 +9,8 @@ dist
 
 # production
 /build
-public
-
+/public
+/src/index.tsx
 # misc
 .DS_Store
 .env.local
