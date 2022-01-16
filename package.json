@@ -1,6 +1,6 @@
 {
   "name": "react-number-keypad",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "react-number-keypad",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

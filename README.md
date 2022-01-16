@@ -26,7 +26,7 @@ yarn add react-number-keypad
 ```js
 import React from "react";
 import ReactDOM from "react-dom";
-import ReactKeypad from "./ReactKeypad";
+import ReactKeypad from "react-number-keypad";
 
 ReactDOM.render(
     <ReactKeypad
