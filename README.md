@@ -26,10 +26,10 @@ yarn add react-number-keypad
 ```js
 import React from "react";
 import ReactDOM from "react-dom";
-import ReactKeypad from "react-number-keypad";
+import Drawer from "react-number-keypad";
 
 ReactDOM.render(
-    <ReactKeypad
+    <Drawer
         isVisible
         emptyPassword={false}
         onClose={() => null}

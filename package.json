@@ -1,7 +1,7 @@
 {
-  "name": "react-number-keypad",
-  "version": "1.0.2",
-  "description": "react-number-keypad",
+  "name": "react-touch-drawer",
+  "version": "0.0.1",
+  "description": "react-touch-drawer",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "homepage": "https://github.com/qqww08/react-number-keypad",
@@ -15,14 +15,11 @@
   },
   "keywords": [
     "react",
-    "password",
-    "keypad"
+    "touch"
   ],
   "dependencies": {
-    "react": "^16.11.0 || ^17.0.0",
-    "react-bottom-drawer": "^0.1.1",
+    "react": "17.0.2",
     "react-dom": "^17.0.2",
-    "react-number-keypad": "^1.0.2",
     "react-scripts": "5.0.0",
     "styled-components": "^5.2.1"
   },
