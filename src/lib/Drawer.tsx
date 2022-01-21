@@ -1,28 +1,41 @@
 import styled from "styled-components";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
+import useScrollHidden from "../hooks/useScrollHidden";
+import {
+  directionTransform,
+  directionValue,
+  drawerValue,
+  endCompare,
+  limitCompare,
+  offset,
+  scrollKeys,
+  translateKey,
+  translateValue,
+} from "../variable";
 
+type TDirection = "left" | "right" | "bottom" | "top";
 interface StyledProps {
-  visible: boolean;
+  visible?: boolean;
+  styledDirection?: object;
+  direction?: any;
+  transform?: any;
+  full?: boolean;
 }
 interface Props {
-  direction: "left" | "right" | "bottom" | "top";
+  direction: TDirection;
   visible: boolean;
   onToggle: () => void;
   children: ReactNode;
+  full?: boolean;
 }
+
 const Drawer = (props: Props) => {
-  const { visible, onToggle, children } = props;
+  const { visible, onToggle, children, direction, full } = props;
+  useScrollHidden();
 
   const [show, setShow] = useState(visible);
   const drawerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
 
   const handleShowClick = () => {
     setShow(false);
@@ -35,23 +48,24 @@ const Drawer = (props: Props) => {
     let clientY = 0;
     let moveClientY = 0;
     const touchStart = (e) => {
-      clientY = e.touches[0].clientY;
+      clientY = e.touches[0][scrollKeys[direction]];
     };
     const touchmove = (e) => {
-      moveClientY = e.touches[0].clientY - clientY;
-      if (moveClientY < 0) return;
+      moveClientY = e.touches[0][scrollKeys[direction]] - clientY;
+      if (limitCompare[direction](moveClientY)) return;
 
       if (drawerRef.current) {
-        drawerRef.current.style.transform = `translateY(${moveClientY}px)`;
+        drawerRef.current.style.transform = `${translateKey[direction]}(${moveClientY}px)`;
         drawerRef.current.style.transition = `none 0s`;
       }
     };
 
     const touchend = () => {
       if (drawerRef.current) {
-        if (moveClientY > drawerRef.current.offsetHeight - moveClientY) {
-          drawerRef.current.style.transform = `translateY(${2000}px)`;
-          drawerRef.current.style.transition = `500ms all`;
+        const movePoint = drawerRef.current[offset[direction]] - moveClientY;
+        if (endCompare[direction](moveClientY, movePoint)) {
+          drawerRef.current.style.transform = `${translateKey[direction]}(${translateValue[direction]}px)`;
+          drawerRef.current.style.transition = `300ms all`;
           return handleShowClick();
         }
         clientY = 0;
@@ -70,7 +84,7 @@ const Drawer = (props: Props) => {
       buttonRef.current?.removeEventListener("touchmove", touchmove, false);
       buttonRef.current?.removeEventListener("touchend", touchend, false);
     };
-  }, [buttonRef, visible]);
+  }, [visible]);
 
   useEffect(() => {
     setShow(visible);
@@ -81,9 +95,16 @@ const Drawer = (props: Props) => {
       {visible && (
         <__Wrapper>
           <__Back onClick={handleShowClick} visible={show} />
-          <__Drawer ref={drawerRef} id={"drawer"} visible={show}>
-            <__Header ref={buttonRef}>
-              <__Bar />
+          <__Drawer
+            ref={drawerRef}
+            id={"drawer"}
+            visible={show}
+            transform={directionTransform[direction]}
+            direction={direction}
+            full={full}
+          >
+            <__Header ref={buttonRef} direction={direction}>
+              {/*  <__Bar />*/}
             </__Header>
             {children}
           </__Drawer>
@@ -106,30 +127,20 @@ const __Back = styled.div<StyledProps>`
 `;
 
 const __Wrapper = styled.div``;
-const __Header = styled.div`
-  width: 100%;
-  height: 30px;
+const __Header = styled.div<StyledProps>`
+  ${(props) => drawerValue[props.direction]};
+  position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-const __Bar = styled.div`
-  border-radius: 15px;
-  width: 15vw;
-  height: 1.5vw;
-  background: #a1a1a1;
-`;
+
 const __Drawer = styled.div<StyledProps>`
-  border-radius: 15px 15px 0 0;
+  ${(props) => directionValue[props.direction]};
   transition: transform 500ms;
-  ${(props) =>
-    props.visible ? { transform: `translateY(0)` } : { transform: "translateY(2000px)" }};
+  ${(props) => (props.visible ? props.transform[0] : props.transform[1])};
   background: #eee;
-  width: 100%;
-  min-height: 30vw;
-  height: auto;
+  ${(props) => props.full && { width: "100%", height: "100%" }}
   position: absolute;
   z-index: 90;
-  bottom: 0;
-  left: 0;
 `;
