@@ -1,5 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Drawer from "./lib/Drawer";
+import Render from "./lib/Render";
 
-ReactDOM.render(<Drawer />, document.getElementById("root"));
+ReactDOM.render(<Render />, document.getElementById("root"));
