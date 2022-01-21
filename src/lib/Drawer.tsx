@@ -3,7 +3,6 @@ import React, { ReactNode, useEffect, useRef, useState } from "react";
 
 interface StyledProps {
   visible: boolean;
-  scrollY?: number;
 }
 interface Props {
   direction: "left" | "right" | "bottom" | "top";
@@ -35,45 +34,42 @@ const Drawer = (props: Props) => {
   useEffect(() => {
     let clientY = 0;
     let moveClientY = 0;
-    if (buttonRef.current) {
-      buttonRef.current.addEventListener(
-        "touchstart",
-        (e) => {
-          clientY = e.touches[0].clientY;
-        },
-        false
-      );
-      buttonRef.current.addEventListener(
-        "touchmove",
-        (e) => {
-          moveClientY = e.touches[0].clientY - clientY;
-          if (moveClientY < 0) return;
+    const touchStart = (e) => {
+      clientY = e.touches[0].clientY;
+    };
+    const touchmove = (e) => {
+      moveClientY = e.touches[0].clientY - clientY;
+      if (moveClientY < 0) return;
 
-          if (drawerRef.current) {
-            drawerRef.current.style.transform = `translateY(${moveClientY}px)`;
-            drawerRef.current.style.transition = `none 0s`;
-          }
-        },
-        false
-      );
-      buttonRef.current.addEventListener(
-        "touchend",
-        () => {
-          if (drawerRef.current) {
-            if (moveClientY > drawerRef.current.offsetHeight - moveClientY) {
-              drawerRef.current.style.transform = `translateY(${2000}px)`;
-              drawerRef.current.style.transition = `500ms all`;
-              return handleShowClick();
-            }
-            clientY = 0;
-            moveClientY = 0;
-            drawerRef.current.style.transform = `none`;
-            drawerRef.current.style.transition = `300ms all`;
-          }
-        },
-        false
-      );
+      if (drawerRef.current) {
+        drawerRef.current.style.transform = `translateY(${moveClientY}px)`;
+        drawerRef.current.style.transition = `none 0s`;
+      }
+    };
+
+    const touchend = () => {
+      if (drawerRef.current) {
+        if (moveClientY > drawerRef.current.offsetHeight - moveClientY) {
+          drawerRef.current.style.transform = `translateY(${2000}px)`;
+          drawerRef.current.style.transition = `500ms all`;
+          return handleShowClick();
+        }
+        clientY = 0;
+        moveClientY = 0;
+        drawerRef.current.style.transform = `none`;
+        drawerRef.current.style.transition = `300ms all`;
+      }
+    };
+    if (buttonRef.current) {
+      buttonRef.current.addEventListener("touchstart", touchStart, false);
+      buttonRef.current.addEventListener("touchmove", touchmove, false);
+      buttonRef.current.addEventListener("touchend", touchend, false);
     }
+    return () => {
+      buttonRef.current?.removeEventListener("touchstart", touchStart, false);
+      buttonRef.current?.removeEventListener("touchmove", touchmove, false);
+      buttonRef.current?.removeEventListener("touchend", touchend, false);
+    };
   }, [buttonRef, visible]);
 
   useEffect(() => {
@@ -85,7 +81,7 @@ const Drawer = (props: Props) => {
       {visible && (
         <__Wrapper>
           <__Back onClick={handleShowClick} visible={show} />
-          <__Drawer ref={drawerRef} id={"drawer"} visible={show} scrollY={scrollY}>
+          <__Drawer ref={drawerRef} id={"drawer"} visible={show}>
             <__Header ref={buttonRef}>
               <__Bar />
             </__Header>
@@ -130,7 +126,8 @@ const __Drawer = styled.div<StyledProps>`
     props.visible ? { transform: `translateY(0)` } : { transform: "translateY(2000px)" }};
   background: #eee;
   width: 100%;
-  height: 70vh;
+  min-height: 30vw;
+  height: auto;
   position: absolute;
   z-index: 90;
   bottom: 0;
