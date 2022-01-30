@@ -4,7 +4,6 @@ import useScrollHidden from "../hooks/useScrollHidden";
 import {
   directionTransform,
   directionValue,
-  drawerValue,
   endCompare,
   limitCompare,
   offset,
@@ -25,23 +24,23 @@ interface Props {
   direction: TDirection;
   visible: boolean;
   onToggle: () => void;
-  children: ReactNode;
+  children: ReactNode | string;
   full?: boolean;
+  isTouch?: boolean;
 }
 
 const Drawer = (props: Props) => {
-  const { visible, onToggle, children, direction, full } = props;
+  const { visible, onToggle, children, direction, full, isTouch = true } = props;
   useScrollHidden();
 
   const [show, setShow] = useState(visible);
   const drawerRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
 
   const handleShowClick = () => {
     setShow(false);
     setTimeout(() => {
       onToggle();
-    }, 500);
+    }, 0);
   };
 
   useEffect(() => {
@@ -74,15 +73,15 @@ const Drawer = (props: Props) => {
         drawerRef.current.style.transition = `300ms all`;
       }
     };
-    if (buttonRef.current) {
-      buttonRef.current.addEventListener("touchstart", touchStart, false);
-      buttonRef.current.addEventListener("touchmove", touchmove, false);
-      buttonRef.current.addEventListener("touchend", touchend, false);
+    if (drawerRef.current && isTouch) {
+      drawerRef.current.addEventListener("touchstart", touchStart, false);
+      drawerRef.current.addEventListener("touchmove", touchmove, false);
+      drawerRef.current.addEventListener("touchend", touchend, false);
     }
     return () => {
-      buttonRef.current?.removeEventListener("touchstart", touchStart, false);
-      buttonRef.current?.removeEventListener("touchmove", touchmove, false);
-      buttonRef.current?.removeEventListener("touchend", touchend, false);
+      drawerRef.current?.removeEventListener("touchstart", touchStart, false);
+      drawerRef.current?.removeEventListener("touchmove", touchmove, false);
+      drawerRef.current?.removeEventListener("touchend", touchend, false);
     };
   }, [visible]);
 
@@ -103,9 +102,6 @@ const Drawer = (props: Props) => {
             direction={direction}
             full={full}
           >
-            <__Header ref={buttonRef} direction={direction}>
-              {/*  <__Bar />*/}
-            </__Header>
             {children}
           </__Drawer>
         </__Wrapper>
@@ -127,13 +123,6 @@ const __Back = styled.div<StyledProps>`
 `;
 
 const __Wrapper = styled.div``;
-const __Header = styled.div<StyledProps>`
-  ${(props) => drawerValue[props.direction]};
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 const __Drawer = styled.div<StyledProps>`
   ${(props) => directionValue[props.direction]};

@@ -1,4 +1,19 @@
-export const directionValue = {
+export type TStyledDirection = {
+  left?: number;
+  top?: number;
+  right?: number;
+  bottom?: number;
+  height?: string;
+  width?: string;
+};
+export interface IStyledDirection {
+  left: TStyledDirection;
+  right: TStyledDirection;
+  bottom: TStyledDirection;
+  top: TStyledDirection;
+}
+
+export const directionValue: IStyledDirection = {
   left: { left: 0, top: 0, height: "100%" },
   right: { right: 0, top: 0, height: "100%" },
   bottom: { bottom: 0, left: 0, width: "100%" },
