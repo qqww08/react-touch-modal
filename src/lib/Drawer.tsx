@@ -16,7 +16,7 @@ type TDirection = "left" | "right" | "bottom" | "top";
 interface StyledProps {
   visible?: boolean;
   styledDirection?: object;
-  direction?: any;
+  direction?: string;
   transform?: any;
   full?: boolean;
 }
@@ -125,11 +125,11 @@ const __Back = styled.div<StyledProps>`
 const __Wrapper = styled.div``;
 
 const __Drawer = styled.div<StyledProps>`
-  ${(props) => directionValue[props.direction]};
-  transition: transform 500ms;
+  ${(props) => directionValue[props.direction as string]};
   ${(props) => (props.visible ? props.transform[0] : props.transform[1])};
-  background: #eee;
   ${(props) => props.full && { width: "100%", height: "100%" }}
+  transition: transform 500ms;
+  background: #fff;
   position: absolute;
   z-index: 90;
 `;

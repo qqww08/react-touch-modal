@@ -2,21 +2,11 @@
 
 # dependencies
 /node_modules
-dist
+/dist
 .idea
 # testing
 /coverage
 
-# production
-/build
-/public
-/src/index.tsx
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 npm-debug.log*
 yarn-debug.log*
