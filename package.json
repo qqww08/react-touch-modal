@@ -1,6 +1,6 @@
 {
   "name": "react-touch-modal",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "react-touch-modal",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
