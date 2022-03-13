@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, { ReactNode, useEffect, useRef, useState } from "react";
-import useScrollHidden from "../hooks/useScrollHidden";
+import useScrollHidden from "./hooks/useScrollHidden";
 import {
   directionTransform,
   directionValue,
@@ -11,6 +11,7 @@ import {
   translateKey,
   translateValue,
 } from "../variable";
+import Portal from "./Portal";
 
 type TDirection = "left" | "right" | "bottom" | "top";
 interface StyledProps {
@@ -90,7 +91,7 @@ const Drawer = (props: Props) => {
   }, [visible]);
 
   return (
-    <>
+    <Portal>
       {visible && (
         <__Wrapper>
           <__Back onClick={handleShowClick} visible={show} />
@@ -106,7 +107,7 @@ const Drawer = (props: Props) => {
           </__Drawer>
         </__Wrapper>
       )}
-    </>
+    </Portal>
   );
 };
 
