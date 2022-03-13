@@ -11,7 +11,6 @@ import {
   translateKey,
   translateValue,
 } from "../variable";
-import Portal from "./Portal";
 
 type TDirection = "left" | "right" | "bottom" | "top";
 interface StyledProps {
@@ -91,7 +90,7 @@ const Drawer = (props: Props) => {
   }, [visible]);
 
   return (
-    <Portal>
+    <>
       {visible && (
         <__Wrapper>
           <__Back onClick={handleShowClick} visible={show} />
@@ -107,7 +106,7 @@ const Drawer = (props: Props) => {
           </__Drawer>
         </__Wrapper>
       )}
-    </Portal>
+    </>
   );
 };
 
@@ -123,7 +122,11 @@ const __Back = styled.div<StyledProps>`
   inset: 0;
 `;
 
-const __Wrapper = styled.div``;
+const __Wrapper = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+`;
 
 const __Drawer = styled.div<StyledProps>`
   ${(props) => directionValue[props.direction as string]};
